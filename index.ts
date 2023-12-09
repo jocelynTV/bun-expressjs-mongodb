@@ -50,7 +50,17 @@ app.post("/users", async (req: Request, res: Response) => {
 });
 
 app.get("/users", async (req: Request, res: Response) => {
-  const users = await userModel.find().select('-password');
+  const users = await userModel.find().select("-password");
+  res.json(users);
+});
+
+app.patch("/users/:id", async (req: Request, res: Response) => {
+  await userModel.findByIdAndUpdate(req.params.id, req.body);
+  res.json({updated: true});
+});
+
+app.delete("/:id", async (req: Request, res: Response) => {
+  const users = await userModel.deleteOne({_id: req.params.id});
   res.json(users);
 });
 
