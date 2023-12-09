@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema(
     email: String,
     password: String,
   },
-  { timestamps: true, versionKey: false }
+  {timestamps: true, versionKey: false}
 );
 
 const userModel = mongoose.model("users", userSchema);
@@ -29,7 +29,7 @@ app.post("/users", async (req: Request, res: Response) => {
     email: Joi.string()
       .email({
         minDomainSegments: 2,
-        tlds: { allow: ["com", "net"] },
+        tlds: {allow: ["com", "net"]},
       })
       .required(),
   });
@@ -42,11 +42,16 @@ app.post("/users", async (req: Request, res: Response) => {
       name: value.name,
     });
     const saveUser: any = await user.save();
-    const { password, ...newUser } = saveUser._doc;
+    const {password, ...newUser} = saveUser._doc;
     res.json(newUser);
   } catch (err: any) {
-    res.json({ err: err.message });
+    res.json({err: err.message});
   }
+});
+
+app.get("/users", async (req: Request, res: Response) => {
+  const users = await userModel.find().select('-password');
+  res.json(users);
 });
 
 app.get("/", async (req: Request, res: Response) => {
